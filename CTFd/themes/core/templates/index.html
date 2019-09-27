@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>Admin Panel</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="http://0.0.0.0:8000/themes/core/static/img/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="http://0.0.0.0:8000/themes/core/static/img/favicon.ico" type="image/x-icon">
+	<link rel="stylesheet" href="index_files/bootstrap.css">
+	<link rel="stylesheet" href="index_files/fontawesome-fonts.css" type="text/css">
+	<link rel="stylesheet" href="index_files/fontawesome-all.css" type="text/css">
+	<link rel="stylesheet" href="index_files/font.css">
+	<link rel="stylesheet" href="index_files/jumbotron.css">
+	<link rel="stylesheet" href="index_files/sticky-footer.css">
+	<link rel="stylesheet" href="index_files/base.css">
+	<link rel="stylesheet" href="index_files/style.css">
+	<script src="index_files/promise-polyfill.js"></script>
+	<script src="index_files/eventsource.js"></script>
+	<script src="index_files/CTFd.js"></script>
+	<script src="index_files/fetch.js"></script>
+	<script src="index_files/moment.js"></script>
+	<script src="index_files/moment-timezone-with-data.js"></script>
+	<script src="index_files/nunjucks.js"></script>
+	<script type="text/javascript">
+		var script_root = "";
+		var csrf_nonce = "04441443daed10e94b1f43541347d9c775858f588218222e6a499be82d015be8";
+		var user_mode = "users";
+		var ctf_start = null;
+		var ctf_end = null;
+		CTFd.options.urlRoot = script_root;
+		CTFd.options.csrfNonce = csrf_nonce;
+		CTFd.options.start = ctf_start;
+		CTFd.options.end = ctf_end;
+	</script>
+	
+	<link rel="stylesheet" type="text/css" href="index_files/codemirror.css">
+	<style>
+	.CodeMirror-gutters {
+		min-height: 100% !important;;
+	}
+	</style>
+
+	
+</head>
+
+<body style="" class="">
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" style="">
+		<div class="container">
+			<a href="http://0.0.0.0:8000/" class="navbar-brand">CTFd</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#base-navbars" aria-controls="base-navbars" aria-expanded="false" aria-label="Toggle navigation" style="">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="base-navbars">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item"><a class="nav-link" href="http://0.0.0.0:8000/admin/statistics">Statistics</a></li>
+					<li class="nav-item"><a class="nav-link" href="http://0.0.0.0:8000/admin/notifications">Notifications</a>
+					</li>
+					<li class="nav-item dropdown">
+						<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">Pages</a>
+						<div class="dropdown-menu">
+							<a class="dropdown-item" href="http://0.0.0.0:8000/admin/pages">All Pages</a>
+							<a class="dropdown-item" href="http://0.0.0.0:8000/admin/pages/new">New Page</a>
+						</div>
+					</li>
+					<li class="nav-item"><a class="nav-link" href="http://0.0.0.0:8000/admin/users">Users</a></li>
+					
+					<li class="nav-item"><a class="nav-link" href="http://0.0.0.0:8000/admin/scoreboard">Scoreboard</a></li>
+					<li class="nav-item"><a class="nav-link" href="http://0.0.0.0:8000/admin/challenges">Challenges</a></li>
+					<li class="nav-item dropdown">
+						<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">Submissions</a>
+						<div class="dropdown-menu">
+							<a class="dropdown-item" href="http://0.0.0.0:8000/admin/submissions">All Submissions</a>
+							<a class="dropdown-item" href="http://0.0.0.0:8000/admin/submissions/correct">Correct Submissions</a>
+							<a class="dropdown-item" href="http://0.0.0.0:8000/admin/submissions/incorrect">Wrong Submissions</a>
+						</div>
+					</li>
+					<li class="nav-item"><a class="nav-link" href="http://0.0.0.0:8000/admin/config">Config</a></li>
+
+					
+					
+					
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	
+
+
+	<main role="main">
+		
+<div id="media-modal" class="modal fade" tabindex="-1">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-12">
+							<h3 class="text-center">Media Library</h3>
+						</div>
+					</div>
+				</div>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="modal-header">
+					<div class="container">
+						<div class="row mh-100">
+							<div class="col-md-6" id="media-library-list">
+							</div>
+							<div class="col-md-6" id="media-library-details">
+								<h4 class="text-center">Media Details</h4>
+								<div id="media-item">
+									<div class="text-center" id="media-icon">
+									</div>
+									<br>
+									<div class="text-center" id="media-filename">
+									</div>
+									<br>
+									<div class="form-group">
+										Link: <input class="form-control" type="text" id="media-link" readonly="readonly">
+									</div>
+
+									<div class="form-group text-center">
+										<div class="row">
+											<div class="col-md-6">
+												<button class="btn btn-success w-100" id="media-insert" data-toggle="tooltip" data-placement="top" title="" data-original-title="Insert link into editor">
+													Insert
+												</button>
+											</div>
+											<div class="col-md-3">
+												<button class="btn btn-primary w-100" id="media-download" data-toggle="tooltip" data-placement="top" title="" data-original-title="Download file">
+													<i class="fas fa-download"></i>
+												</button>
+											</div>
+											<div class="col-md-3">
+												<button class="btn btn-danger w-100" id="media-delete" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete file">
+													<i class="far fa-trash-alt"></i>
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<form id="media-library-upload" enctype="multipart/form-data">
+					<div class="form-group">
+						<label for="media-files">
+							Upload Files
+						</label>
+						<input type="file" name="file" id="media-files" class="form-control-file" multiple="">
+						<sub class="help-block">
+							Attach multiple files using Control+Click or Cmd+Click.
+						</sub>
+					</div>
+					<input type="hidden" value="page" name="type">
+				</form>
+			</div>
+			<div class="modal-footer">
+				<div class="float-right">
+					<button type="submit" class="btn btn-primary" onclick="upload_media()">Upload</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="container">
+	<div class="row pt-5">
+		<div class="col-md-12">
+			<div class="row">
+				
+			</div>
+
+			<form id="page-edit" method="POST" action="/admin/pages/preview" target="_blank">
+				<div class="form-group">
+					<div class="col-md-12">
+						<label>
+							Title<br>
+							<small class="text-muted">This is the title shown on the navigation bar</small>
+						</label>
+						<input class="form-control radius input-filled-valid" id="route" type="text" name="title" value="None" placeholder="Title">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-md-12">
+						<label>
+							Route<br>
+							<small class="text-muted">
+								This is the URL route that your page will be at (e.g. /page). You can
+								also enter links to link to that page.
+							</small>
+						</label>
+						<input class="form-control radius input-filled-valid" id="route" type="text" name="route" value="index" placeholder="Route">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-md-12">
+
+						<h3>Content</h3>
+						<small class="text-muted">This is the HTML content of your page</small>
+
+						<ul class="nav nav-tabs" role="tablist" id="content-edit">
+							<li class="nav-item" role="presentation">
+								<a class="nav-link active" href="#content-write" aria-controls="home" role="tab" data-toggle="tab">Write</a>
+							</li>
+							<li class="nav-item" role="presentation">
+								<a class="nav-link" onclick="preview_page(); return true;" href="#">Preview</a>
+							</li>
+						</ul>
+
+						<div class="tab-content">
+							<div role="tabpanel" class="tab-pane active" id="content-write" style="height:400px">
+								<br>
+
+								<div class="form-inline">
+									<div class="btn-group btn-group-sm">
+										<div class="btn-group">
+											<button type="button" class="btn btn-primary" id="media-button">
+												<i class="fas fa-camera-retro"></i>
+												Media Library
+											</button>
+										</div>
+									</div>
+
+									<span class="nav-link d-none d-md-block d-lg-block">|</span>
+
+									<div class="form-group pr-3">
+										Draft:
+										
+										<select name="draft">
+											<option value="true">
+												True
+											</option>
+											<option value="false" selected="selected">
+												False
+											</option>
+										</select>
+									</div>
+
+									<div class="form-group pr-3">
+										Hidden:
+										
+										<select name="hidden">
+											<option value="true">True
+											</option>
+											<option value="false" selected="selected">False
+											</option>
+										</select>
+									</div>
+
+									<div class="form-group pr-3">
+										Authentication Required:
+										
+										<select name="auth_required">
+											<option value="true">
+												True
+											</option>
+											<option value="false" selected="selected">
+												False
+											</option>
+										</select>
+									</div>
+								</div>
+
+								<br>
+
+								<div class="form-group">
+									<textarea id="admin-pages-editor" class="d-none" name="content" style="display: none;">&lt;div class="row"&gt;
+    &lt;div class="col-md-6 offset-md-3"&gt;
+        &lt;h3 class="text-center" style="padding-top:300px;"&gt;
+            &lt;p style="font-size:50px;background: linear-gradient(to right, #90d5eb, #f586b9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;"&gt;Welcome to INFO&lt;/p&gt;
+            &lt;p style="font-size:50px;background: linear-gradient(to right, #90d5eb, #f586b9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;"&gt;Push the envelope&lt;/p&gt;
+        &lt;/h3&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</textarea><div class="CodeMirror cm-s-default CodeMirror-wrap CodeMirror-focused"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 148px; left: 384px;"><textarea style="position: absolute; bottom: -1em; padding: 0px; width: 1px; height: 1em; outline: currentcolor none medium;" autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" wrap="off"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true" style="bottom: 0px;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1" draggable="true"><div class="CodeMirror-sizer" style="margin-left: 30px; margin-bottom: -12px; border-right-width: 18px; min-height: 296px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div style="position: relative; outline: currentcolor none medium;" role="presentation"><div class="CodeMirror-measure"><span><span>​</span>x</span><div class="CodeMirror-linenumber CodeMirror-gutter-elt"><div>9</div></div><div class="CodeMirror-linenumber CodeMirror-gutter-elt"><div>10</div></div></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors" style=""><div class="CodeMirror-cursor" style="left: 354px; top: 144px; height: 24px;">&nbsp;</div></div><div class="CodeMirror-code" role="presentation" style=""><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation">&lt;div class="row"&gt;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">2</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation">    &lt;div class="col-md-6 offset-md-3"&gt;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">3</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation">        &lt;h3 class="text-center" style="padding-top:300px;"&gt;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">4</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation">            &lt;p style="font-size:50px;background: linear-gradient(to right, #90d5eb, #f586b9);</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">5</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation">  -webkit-background-clip: text;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">6</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation">  -webkit-text-fill-color: transparent;"&gt;Welcome to INFO&lt;/p&gt;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">7</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation">            &lt;p style="font-size:50px;background: linear-gradient(to right, #90d5eb, #f586b9);</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">8</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation">  -webkit-background-clip: text;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">9</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation">  -webkit-text-fill-color: transparent;"&gt;Push the envelope&lt;/p&gt;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">10</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation">        &lt;/h3&gt;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">11</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation">    &lt;/div&gt;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">12</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation">&lt;/div&gt;</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 18px; width: 1px; border-bottom: 0px solid transparent; top: 296px;"></div><div class="CodeMirror-gutters" style="height: 314px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 29px;"></div></div></div></div>
+									<input name="id" type="hidden" value="1">
+								</div>
+							</div>
+							<div role="tabpanel" class="tab-pane content" id="content-preview" style="height:400px">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group float-right">
+					<input name="nonce" type="hidden" value="04441443daed10e94b1f43541347d9c775858f588218222e6a499be82d015be8">
+					<button class="btn btn-primary" id="save-page">
+						
+							Update
+						
+					</button>
+				</div>
+
+			</form>
+		</div>
+	</div>
+</div>
+
+	<div class="modal fade" tabindex="-1" role="dialog" style="z-index: 1050; display: none;" aria-hidden="true">  <div class="modal-dialog" role="document">    <div class="modal-content">      <div class="modal-header">        <h5 class="modal-title">Saved</h5>        <button type="button" class="close" data-dismiss="modal" aria-label="Close">          <span aria-hidden="true">×</span>        </button>      </div>      <div class="modal-body">        <p>Your changes have been saved</p>      </div>      <div class="modal-footer">      <button type="button" class="btn btn-primary" data-dismiss="modal">Okay</button></div>    </div>  </div></div></main>
+
+	<footer class="footer pt-2">
+		<div class="container text-center">
+			<a href="https://ctfd.io/">
+				<small class="text-muted">
+					Powered by CTFd
+				</small>
+			</a>
+			<span>
+				<small class="text-muted"><br> Version 2.1.4</small>
+			</span>
+		</div>
+	</footer>
+
+	<script src="index_files/jquery.js"></script>
+	<script src="index_files/markdown-it.js"></script>
+	<script src="index_files/bootstrap.js"></script>
+	<script src="index_files/multi-modal.js"></script>
+	<script src="index_files/howler.js"></script>
+	<script src="index_files/window-controller.js"></script>
+	<script src="index_files/main.js"></script>
+	<script src="index_files/utils.js"></script>
+	<script src="index_files/ezq.js"></script>
+	<script src="index_files/style.js"></script>
+	<script src="index_files/events.js"></script>
+	
+<script src="index_files/codemirror.js"></script>
+<script src="index_files/files.js"></script>
+<script src="index_files/media.js"></script>
+<script src="index_files/editor.js"></script>
+
+
+	
+
+
+</body></html>
