@@ -147,13 +147,16 @@ def create_app(config="CTFd.config.Config"):
         migrations.init_app(app, db)
 
         # Alembic sqlite support is lacking so we should just create_all anyway
-        if url.drivername.startswith("sqlite"):
-            db.create_all()
-            stamp_latest_revision()
-        else:
-            # This creates tables instead of db.create_all()
-            # Allows migrations to happen properly
-            upgrade()
+        try:
+            if url.drivername.startswith("sqlite"):
+                db.create_all()
+                stamp_latest_revision()
+            else:
+                # This creates tables instead of db.create_all()
+                # Allows migrations to happen properly
+                upgrade()
+        except:
+            pass
 
         from CTFd.models import ma
 
