@@ -23,10 +23,13 @@ def create_database():
 
     # Creates database if the database database does not exist
     if not database_exists_util(url):
-        if url.drivername.startswith("mysql"):
-            create_database_util(url, encoding="utf8mb4")
-#         else:
-#             create_database_util(url)
+        try:
+            if url.drivername.startswith("mysql"):
+                create_database_util(url, encoding="utf8mb4")
+            else:
+                create_database_util(url)
+        except:
+            pass
     return url
 
 
