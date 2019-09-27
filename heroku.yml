@@ -4,6 +4,17 @@ setup:
 build:
  docker:
    web: ./Dockerfile
+run:
+  worker:
+    command:
+      - gunicorn 'CTFd:create_app()' \
+    --bind '0.0.0.0:$PORT' \
+    --workers $WORKERS \
+    --worker-tmp-dir "$WORKER_TEMP_DIR" \
+    --worker-class "$WORKER_CLASS" \
+    --access-logfile "$ACCESS_LOG" \
+    --error-logfile "$ERROR_LOG"
+    image: web
 release:
    image: web
    command:
